@@ -2,7 +2,12 @@ import axios from "axios";
 import type { CreateNoteValues, FetchNotesValues, Note } from "../types/note";
 import { toast } from "react-hot-toast";
 
-axios.defaults.baseURL = "https://notehub-public.goit.study/api";
+// axios.defaults.baseURL = "https://notehub-public.goit.study/api";
+
+export const nextServer = axios.create({
+  baseURL: "http://localhost:3000/api",
+  withCredentials: true,
+});
 
 interface ParamsTypes {
   page: number;
@@ -31,7 +36,7 @@ export async function fetchNotes(
       params.tag = tag;
     }
 
-    const res = await axios.get<FetchNotesValues>("/notes", {
+    const res = await nextServer.get<FetchNotesValues>("/notes", {
       params,
       headers: {
         Authorization: `Bearer ${process.env.NEXT_PUBLIC_NOTEHUB_TOKEN}`,
@@ -39,7 +44,8 @@ export async function fetchNotes(
     });
     return res.data;
   } catch (error) {
-    toast.error(error instanceof Error ? error.message : String(error));
+    // toast.error(error instanceof Error ? error.message : String(error));
+    throw error;
   }
 }
 
@@ -55,7 +61,7 @@ export async function createNote({
       tag,
     };
 
-    const res = await axios.post<Note>("/notes", params, {
+    const res = await nextServer.post<Note>("/notes", params, {
       headers: {
         Authorization: `Bearer ${process.env.NEXT_PUBLIC_NOTEHUB_TOKEN}`,
       },
@@ -68,7 +74,7 @@ export async function createNote({
 
 export async function deleteNote(id: number): Promise<Note | undefined> {
   try {
-    const res = await axios.delete<Note>(`/notes/${id}`, {
+    const res = await nextServer.delete<Note>(`/notes/${id}`, {
       headers: {
         Authorization: `Bearer ${process.env.NEXT_PUBLIC_NOTEHUB_TOKEN}`,
       },
@@ -83,13 +89,14 @@ export default async function fetchNoteById(
   id: number
 ): Promise<Note | undefined> {
   try {
-    const res = await axios.get<Note>(`notes/${id}`, {
+    const res = await nextServer.get<Note>(`notes/${id}`, {
       headers: {
         Authorization: `Bearer ${process.env.NEXT_PUBLIC_NOTEHUB_TOKEN}`,
       },
     });
     return res.data;
   } catch (error) {
-    toast.error(error instanceof Error ? error.message : String(error));
+    // toast.error(error instanceof Error ? error.message : String(error));
+    throw error;
   }
 }
