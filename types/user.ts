@@ -1,10 +1,15 @@
 export interface User {
+  username: string;
   email: string;
-  password: string;
 }
 
 export interface LogInUser {
   username: string;
   email: string;
   avatar?: string;
+}
+
+export interface AuthRequest {
+  email: string;
+  password: string;
 }
