@@ -22,7 +22,7 @@ export default function NoteList({ notes }: NoteListProps) {
     },
   });
 
-  function handleDelete(noteId: number) {
+  function handleDelete(noteId: string) {
     mutationDelete.mutate(noteId);
   }
   return (
