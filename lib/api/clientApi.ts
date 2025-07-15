@@ -125,7 +125,6 @@ export async function getMe(): Promise<LogInUser> {
     const res = await nextServer.get("/users/me");
     return res.data;
   } catch (error) {
-    toast.error(error instanceof Error ? error.message : String(error));
     throw error;
   }
 }

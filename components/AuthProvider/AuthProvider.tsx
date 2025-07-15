@@ -19,11 +19,10 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       session()
         .then(async () => {
           const user = await getMe();
-          console.log(user);
           if (user) setUser(user);
         })
         .catch(() => {
-          //   clearIsAuthenticated();
+          // clearIsAuthenticated();
         });
     }
     fetchUser();

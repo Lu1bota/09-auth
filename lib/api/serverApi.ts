@@ -2,6 +2,7 @@ import { FetchNotesValues, Note } from "@/types/note";
 import { nextServer } from "./api";
 import { cookies } from "next/headers";
 import { ParamsTypes } from "./clientApi";
+import { LogInUser } from "@/types/user";
 
 export async function fetchServerNotes(
   search: string,
@@ -27,7 +28,6 @@ export async function fetchServerNotes(
     const res = await nextServer.get<FetchNotesValues>("/notes", {
       params,
       headers: {
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_NOTEHUB_TOKEN}`,
         Cookie: cookieStore.toString(),
       },
     });
@@ -44,13 +44,40 @@ export default async function fetchServerNoteById(
     const cookieStore = await cookies();
     const res = await nextServer.get<Note>(`notes/${id}`, {
       headers: {
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_NOTEHUB_TOKEN}`,
         Cookie: cookieStore.toString(),
       },
     });
     return res.data;
   } catch (error) {
-    // toast.error(error instanceof Error ? error.message : String(error));
+    throw error;
+  }
+}
+
+export async function serverSession() {
+  try {
+    const cookieStore = await cookies();
+    const res = await nextServer.get("/auth/session", {
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
+    });
+
+    return res;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getServerMe(): Promise<LogInUser> {
+  try {
+    const cookieStore = await cookies();
+    const res = await nextServer.get("/users/me", {
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
+    });
+    return res.data;
+  } catch (error) {
     throw error;
   }
 }
