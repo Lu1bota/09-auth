@@ -22,7 +22,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
           if (user) setUser(user);
         })
         .catch(() => {
-          // clearIsAuthenticated();
+          clearIsAuthenticated();
         });
     }
     fetchUser();

@@ -5,6 +5,7 @@ import css from "./EditProfilePage.module.css";
 import { getMe, updateMe } from "@/lib/api/clientApi";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useAuthUser } from "@/lib/store/authStore";
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -14,6 +15,8 @@ export default function EditProfilePage() {
   const [userImage, setUserImage] = useState("");
 
   const [error, setError] = useState("");
+
+  const setUser = useAuthUser((state) => state.setUser);
 
   useEffect(() => {
     async function fetchMe() {
@@ -33,7 +36,8 @@ export default function EditProfilePage() {
   async function handleSave(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
-      await updateMe({ username: userName, email: userEmail });
+      const res = await updateMe({ username: userName });
+      setUser(res);
       router.push("/profile");
     } catch (error) {
       setError(String(error));
@@ -58,6 +62,7 @@ export default function EditProfilePage() {
             <label htmlFor="username">Username:</label>
             <input
               id="username"
+              name="username"
               type="text"
               className={css.input}
               value={userName}
@@ -67,7 +72,7 @@ export default function EditProfilePage() {
 
           <p>Email: {userEmail}</p>
 
-          {error && <p>{error}</p>}
+          {error && <p className={css.error}>{error}</p>}
 
           <div className={css.actions}>
             <button type="submit" className={css.saveButton}>

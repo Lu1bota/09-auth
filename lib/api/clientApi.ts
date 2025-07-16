@@ -1,4 +1,3 @@
-// import axios from "axios";
 import type {
   CreateNoteValues,
   FetchNotesValues,
@@ -8,18 +7,15 @@ import { toast } from "react-hot-toast";
 import { AuthRequest, LogInUser, User } from "@/types/user";
 import { nextServer } from "./api";
 
-// axios.defaults.baseURL = "https://notehub-public.goit.study/api";
-
-// export const nextServer = axios.create({
-//   baseURL: "http://localhost:3000/api",
-//   withCredentials: true,
-// });
-
 export interface ParamsTypes {
   page: number;
   perPage: number;
   search?: string;
   tag?: string;
+}
+
+export interface UpdateMeRequest {
+  username: string;
 }
 
 export async function fetchNotes(
@@ -80,11 +76,9 @@ export async function deleteNote(id: string): Promise<Note | undefined> {
   }
 }
 
-export default async function fetchNoteById(
-  id: string
-): Promise<Note | undefined> {
+export async function fetchNoteById(id: string): Promise<Note | undefined> {
   try {
-    const res = await nextServer.get<Note>(`notes/${id}`);
+    const res = await nextServer.get<Note>(`/notes/${id}`);
     return res.data;
   } catch (error) {
     toast.error(error instanceof Error ? error.message : String(error));
@@ -120,18 +114,18 @@ export async function session() {
   }
 }
 
-export async function getMe(): Promise<LogInUser> {
+export async function getMe() {
   try {
-    const res = await nextServer.get("/users/me");
+    const res = await nextServer.get<LogInUser>("/users/me");
     return res.data;
   } catch (error) {
     throw error;
   }
 }
 
-export async function updateMe(payload: User) {
+export async function updateMe({ username }: UpdateMeRequest) {
   try {
-    const res = await nextServer.patch<LogInUser>("/users/me", payload);
+    const res = await nextServer.patch<LogInUser>("/users/me", { username });
     return res.data;
   } catch (error) {
     toast.error(error instanceof Error ? error.message : String(error));
